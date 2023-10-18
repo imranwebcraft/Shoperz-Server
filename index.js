@@ -28,7 +28,13 @@ async function run() {
 		// Create a collection
 		const productCollection = client.db("shoperz").collection("product");
 
-		// POST product data
+		// Get product API
+		app.get("/products", async (req, res) => {
+			const result = await productCollection.find().toArray();
+			res.send(result);
+		});
+
+		// POST product API
 		app.post("/products", async (req, res) => {
 			const newProducts = req.body;
 			const result = await productCollection.insertOne(newProducts);
