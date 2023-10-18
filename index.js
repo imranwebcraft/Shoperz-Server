@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -27,8 +27,17 @@ async function run() {
 	try {
 		// Create a collection
 		const productCollection = client.db("shoperz").collection("product");
+		const cartCollection = client.db("shoperz").collection("cart");
 
-		// Get product API
+		// Get single Product API
+		app.get("/products/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: new ObjectId(id) };
+			const result = await productCollection.findOne(query);
+			res.send(result);
+		});
+
+		// Get ALL product API
 		app.get("/products", async (req, res) => {
 			const result = await productCollection.find().toArray();
 			res.send(result);
@@ -38,6 +47,13 @@ async function run() {
 		app.post("/products", async (req, res) => {
 			const newProducts = req.body;
 			const result = await productCollection.insertOne(newProducts);
+			res.send(result);
+		});
+
+		// POST add to cart item
+		app.post("/carts", async (req, res) => {
+			const cartItems = req.body;
+			const result = await cartCollection.insertOne(cartItems);
 			res.send(result);
 		});
 
