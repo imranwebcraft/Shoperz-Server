@@ -29,6 +29,8 @@ async function run() {
 		const productCollection = client.db("shoperz").collection("product");
 		const cartCollection = client.db("shoperz").collection("cart");
 
+		/* ** PRoduct related API */
+
 		// Get single Product API
 		app.get("/products/:id", async (req, res) => {
 			const id = req.params.id;
@@ -43,12 +45,6 @@ async function run() {
 			res.send(result);
 		});
 
-		// Get all cart items
-		app.get("/carts", async (req, res) => {
-			const result = await cartCollection.find().toArray();
-			res.send(result);
-		});
-
 		// POST product API
 		app.post("/products", async (req, res) => {
 			const newProducts = req.body;
@@ -56,10 +52,25 @@ async function run() {
 			res.send(result);
 		});
 
+		/* ### Cart related API ### */
+
+		// Get all cart items
+		app.get("/carts", async (req, res) => {
+			const result = await cartCollection.find().toArray();
+			res.send(result);
+		});
 		// POST add to cart item
 		app.post("/carts", async (req, res) => {
 			const cartItems = req.body;
 			const result = await cartCollection.insertOne(cartItems);
+			res.send(result);
+		});
+
+		// Delete cart item
+		app.delete("/carts/:id", async (req, res) => {
+			const id = req.params.id;
+			const query = { _id: new ObjectId(id) };
+			const result = await cartCollection.deleteOne(query);
 			res.send(result);
 		});
 
