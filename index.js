@@ -52,6 +52,34 @@ async function run() {
 			res.send(result);
 		});
 
+		//Dupdate product API
+		app.put("/products/:id", async (req, res) => {
+			const id = req.params.id;
+			const updateProduct = req.body;
+			console.log(updateProduct);
+			// filter
+			const filter = { _id: new ObjectId(id) };
+			const options = { upsert: true };
+			const updateDoc = {
+				$set: {
+					product_name: updateProduct.product_name,
+					brand_name: updateProduct.brand_name,
+					image: updateProduct.image,
+					price: updateProduct.price,
+					rating: updateProduct.rating,
+					type: updateProduct.type,
+					description: updateProduct.description,
+				},
+			};
+
+			const result = await productCollection.updateOne(
+				filter,
+				updateDoc,
+				options
+			);
+			res.send(result);
+		});
+
 		/* ### Cart related API ### */
 
 		// Get all cart items
