@@ -43,6 +43,12 @@ async function run() {
 			res.send(result);
 		});
 
+		// Get all cart items
+		app.get("/carts", async (req, res) => {
+			const result = await cartCollection.find().toArray();
+			res.send(result);
+		});
+
 		// POST product API
 		app.post("/products", async (req, res) => {
 			const newProducts = req.body;
